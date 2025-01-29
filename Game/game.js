@@ -9,19 +9,29 @@ let player = { x: canvas.width / 2 - 10, y: canvas.height / 2 - 10, width: 20, h
 let keys = {};
 let spawnChance = { left: 0.25, right: 0.25, top: 0.25, bottom: 0.25 }; // 各方向からの敵出現頻度
 
-const MAX_MOVE_DISTANCE = 20;  // 最大移動距離（ピクセル）
+const MAX_MOVE_DISTANCE = 200;  // 最大移動距離（ピクセル）
 
-// キー入力のイベントリスナー
 document.addEventListener("keydown", (e) => {
     keys[e.key] = true;
 
+    // 左右移動の影響
     if (e.key === "a" || e.key === "A") {
-        spawnChance.left -= 0.05;  // Aキーで左からの敵の出現頻度を減らす
-        spawnChance.right += 0.05; // 右からの敵の出現頻度を増やす
+        spawnChance.left -= 0.05;
+        spawnChance.right += 0.05;
     }
     if (e.key === "d" || e.key === "D") {
-        spawnChance.right -= 0.05; // Dキーで右からの敵の出現頻度を減らす
-        spawnChance.left += 0.05;  // 左からの敵の出現頻度を増やす
+        spawnChance.right -= 0.05;
+        spawnChance.left += 0.05;
+    }
+
+    // 上下移動の影響
+    if (e.key === "w" || e.key === "W") {
+        spawnChance.top -= 0.05;  // 上の敵の出現を減らす
+        spawnChance.bottom += 0.05; // 下の敵の出現を増やす
+    }
+    if (e.key === "s" || e.key === "S") {
+        spawnChance.bottom -= 0.05; // 下の敵の出現を減らす
+        spawnChance.top += 0.05; // 上の敵の出現を増やす
     }
 });
 
@@ -135,20 +145,27 @@ function update() {
     // Aキーを押している間、少しだけ左に移動
     if (keys["a"] || keys["A"]) {
         if (player.x > canvasCenterX - MAX_MOVE_DISTANCE) {  // 左方向の移動制限
-            player.x -= MAX_MOVE_DISTANCE;  // 少しだけ左に移動
-            console.log(`Player moved left. Current position: x = ${player.x}, y = ${player.y}`);
+            player.x -= 2;  // 少しだけ左に移動
         }
     }
 
     // Dキーを押している間、少しだけ右に移動
     if (keys["d"] || keys["D"]) {
         if (player.x < canvasCenterX + MAX_MOVE_DISTANCE) {  // 右方向の移動制限
-            player.x += MAX_MOVE_DISTANCE;  // 少しだけ右に移動
-            console.log(`Player moved right. Current position: x = ${player.x}, y = ${player.y}`);
+            player.x += 2;  // 少しだけ右に移動
         }
     }
 
-
+    if (keys["w"] || keys["W"]) {
+        if (player.y > canvasCenterY - MAX_MOVE_DISTANCE) {  // 上方向の移動制限
+            player.y -= 2;
+        }
+    }
+    if (keys["s"] || keys["S"]) {
+        if (player.y < canvasCenterY + MAX_MOVE_DISTANCE) {  // 下方向の移動制限
+            player.y += 2;
+        }
+    }
     // 弾の移動
     moveBullets();
 
